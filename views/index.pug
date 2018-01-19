@@ -1,0 +1,72 @@
+extends layout
+
+block content
+  div.container
+    div.row
+      div.text-center.col-12
+        div.header-img
+          img(src='http://pluspng.com/img-png/league-of-legends-png-download-league-of-legends-png-images-transparent-gallery-advertisement-1920.png')
+    div.row
+      div.text-center.col-12
+        div.caption
+          h2 Welcome Summoners!
+    div.row
+      div.col-12
+        div.input-group.input-group-lg
+          input#summoner-input-form(type='text' class='form-control' placeholder='Summoner Name' aria-label='Large' aria-describedby='basic-addon2')
+          div.input-group-append
+            button#summoner-search-button.btn.btn-primary(type='button') Summon
+            button#summoner-region-dropdown.btn.btn-light.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Region
+            div.dropdown-menu
+              a.dropdown-item NA
+              a.dropdown-item EU
+              a.dropdown-item OCE
+    div.row
+      div.col-12
+        div#matches-container.container
+    template#match-template
+      div.match-container.row
+        div.col-12
+          div.card
+            div.card-body
+              div.container
+                div.row
+                  div.col-3
+                    div.champion-details
+                      div.champion-img-container.text-center
+                        img.rounded
+                        span
+                      div.summoners
+                        img.spell-one.summoner-spells.rounded
+                        br
+                        img.spell-two.summoner-spells.rounded
+                      div.champion-name.text-center
+                  div.col-3.text-center
+                    div.kda.text-center
+                      div
+                        h4 K / D / A
+                      div
+                        span.kills
+                        span /
+                        span.deaths
+                        span /
+                        span.assists
+                  div.col-2
+                    div.stats.text-center
+                      div.level
+                      div.creep-score
+                      div.gold
+                  div.col-4
+                    div.champion-build.text-center
+                      div.shop-item-container
+                        img.item0.shop-item.rounded
+                        img.item1.shop-item.rounded
+                        img.item2.shop-item.rounded
+                        br
+                        img.item3.shop-item.rounded
+                        img.item4.shop-item.rounded
+                        img.item5.shop-item.rounded
+                      div.trinket-container
+                        img.trinket.rounded
+    template#error-display
+      div.alert.alert-danger(role='alert') The truth lies in darkness...
