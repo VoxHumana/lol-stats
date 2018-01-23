@@ -18,6 +18,7 @@ import Trinket from "./components/Trinket";
 import ChampionBuild from "./components/ChampionBuild";
 import Match from "./components/Match";
 import EmptyItem from "./components/EmptyItem";
+import Spinner from "./components/Spinner";
 
 class App extends Component {
   constructor(props){
@@ -28,7 +29,8 @@ class App extends Component {
       isLoading: false,
       showError: false,
       errorMessage: null,
-    }
+    };
+    this.spinner = null;
   }
 
   onFetchSummonerMatches = (res) => {
@@ -50,8 +52,10 @@ class App extends Component {
       const championBuild = <ChampionBuild items={items} trinket={trinket}/>;
       return <Match win={match.win} championDetails={champDetails} kda={kda} stats={stats} items={championBuild}/>;
     });
+    this.spinner = null;
     this.setState({
-      matchList: matchList
+      matchList: matchList,
+      isLoading: false,
     });
   };
 
@@ -68,6 +72,14 @@ class App extends Component {
     })
   };
 
+  onLoading = () => {
+    this.spinner = <Spinner/>;
+    this.setState({
+      isLoading: true,
+      matchList: null,
+    });
+  };
+
   render() {
     return (
       <div className="App">
@@ -78,13 +90,14 @@ class App extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs="12">
+            <Col className="text-center" xs="12">
               <SummonerSearchBox
                 onFetchSummonerMatches={this.onFetchSummonerMatches}
-                onFetchError={this.onFetchError}
                 onShowError={this.onShowError}
-                onHideError={this.onHideError}/>
+                onHideError={this.onHideError}
+                onLoading={this.onLoading}/>
               <Alert className="error" color="danger" isOpen={this.state.showError}>{this.state.errorMessage}</Alert>
+              {this.spinner}
             </Col>
           </Row>
           <Row>
