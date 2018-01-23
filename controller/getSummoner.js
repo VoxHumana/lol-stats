@@ -56,66 +56,72 @@ async function filterMatchDetails(accountId, match) {
     throw new Error(`Cannot find summoner in ${match.gameId}`);
   }
   const targetPlayer = match.participants.find(p => p.participantId === targetId);
+  const { championId, spell1Id, spell2Id } = targetPlayer;
+  const {
+    kills, deaths, assists,
+    item0, item1, item2, item3, item4, item5, item6,
+    totalMinionsKilled, goldEarned, champLevel,
+  } = targetPlayer.stats;
   return {
     win: targetPlayer.stats.win,
     champion: {
-      name: championStaticData[targetPlayer.championId].name,
-      image: championStaticData[targetPlayer.championId].image.full,
+      name: championStaticData[championId].name,
+      image: championStaticData[championId].image.full,
     },
-    summonerSpells: {
-      spell1Id: {
-        name: summonerSpellsStaticData[targetPlayer.spell1Id].name,
-        image: summonerSpellsStaticData[targetPlayer.spell1Id].image.full,
+    summonerSpells: [
+      {
+        name: summonerSpellsStaticData[spell1Id].name,
+        image: summonerSpellsStaticData[spell1Id].image.full,
       },
-      spell2Id: {
-        name: summonerSpellsStaticData[targetPlayer.spell2Id].name,
-        image: summonerSpellsStaticData[targetPlayer.spell2Id].image.full,
+      {
+        name: summonerSpellsStaticData[spell2Id].name,
+        image: summonerSpellsStaticData[spell2Id].image.full,
       },
-    },
-    kills: targetPlayer.stats.kills,
-    deaths: targetPlayer.stats.deaths,
-    assists: targetPlayer.stats.assists,
-    items: {
-      item0: {
-        name: shopItemStaticData[targetPlayer.stats.item0].name,
-        image: shopItemStaticData[targetPlayer.stats.item0].image.full,
+    ],
+    kills,
+    deaths,
+    assists,
+    items: [
+      {
+        name: shopItemStaticData[item0].name,
+        image: shopItemStaticData[item0].image.full,
       },
-      item1: {
-        name: shopItemStaticData[targetPlayer.stats.item1].name,
-        image: shopItemStaticData[targetPlayer.stats.item1].image.full,
+      {
+        name: shopItemStaticData[item1].name,
+        image: shopItemStaticData[item1].image.full,
       },
-      item2: {
-        name: shopItemStaticData[targetPlayer.stats.item2].name,
-        image: shopItemStaticData[targetPlayer.stats.item2].image.full,
+      {
+        name: shopItemStaticData[item2].name,
+        image: shopItemStaticData[item2].image.full,
       },
-      item3: {
-        name: shopItemStaticData[targetPlayer.stats.item3].name,
-        image: shopItemStaticData[targetPlayer.stats.item3].image.full,
+      {
+        name: shopItemStaticData[item3].name,
+        image: shopItemStaticData[item3].image.full,
       },
-      item4: {
-        name: shopItemStaticData[targetPlayer.stats.item4].name,
-        image: shopItemStaticData[targetPlayer.stats.item4].image.full,
+      {
+        name: shopItemStaticData[item4].name,
+        image: shopItemStaticData[item4].image.full,
       },
-      item5: {
-        name: shopItemStaticData[targetPlayer.stats.item5].name,
-        image: shopItemStaticData[targetPlayer.stats.item5].image.full,
+      {
+        name: shopItemStaticData[item5].name,
+        image: shopItemStaticData[item5].image.full,
       },
-    },
+    ],
     trinket: {
-      name: shopItemStaticData[targetPlayer.stats.item6].name,
-      image: shopItemStaticData[targetPlayer.stats.item6].image.full,
+      name: shopItemStaticData[item6].name,
+      image: shopItemStaticData[item6].image.full,
     },
-    cs: targetPlayer.stats.totalMinionsKilled,
-    gold: targetPlayer.stats.goldEarned,
+    cs: totalMinionsKilled,
+    gold: goldEarned,
     gameDuration: match.gameDuration,
-    level: targetPlayer.stats.champLevel,
+    level: champLevel,
   };
 }
 
 async function getSummoner(req, res) {
-  if (req.params.hasOwnProperty('summonerName') && req.query.hasOwnProperty('region')) {
-    const summonerName = req.params.summonerName;
-    region = req.query.region;
+  if (req.params.summonerName !== undefined && req.query.region !== undefined) {
+    const { summonerName } = req.params;
+    ({ region } = req.query);
 
     try {
       const accountId = await getSummonerAccountId(summonerName);
