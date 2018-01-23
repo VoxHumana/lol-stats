@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "PORT=3003 node ./bin/www"
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "dependencies": {
     "babel-core": "^6.26.0",

@@ -36,7 +36,7 @@ class App extends Component {
       const spells = match.summonerSpells.map( (spell) => <SummonerSpell summonerSpellImgSrc={spell.image} />
       );
       const summoners =
-        <SummonerSpells spell1={spells[0]} spell2={spells[1]} />;
+        <SummonerSpells spells={spells} />;
       const champDetails =
         <ChampionDetails championImgSrc={match.champion.image} championName={match.champion.name}>
           {summoners}
@@ -55,17 +55,10 @@ class App extends Component {
     });
   };
 
-  onFetchError = () => {
+  onShowError = (errMsg) => {
     this.setState({
       showError: true,
-      errorMessage: 'Embrace the darkness...(error retrieving summoner data)',
-    })
-  };
-
-  onShowError = () => {
-    this.setState({
-      showError: true,
-      errorMessage: 'Invalid summoner name!',
+      errorMessage: errMsg,
     })
   };
 
@@ -82,11 +75,6 @@ class App extends Component {
           <Row>
             <Col xs="12">
               <HeaderImage />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs="12">
-              <Caption />
             </Col>
           </Row>
           <Row>

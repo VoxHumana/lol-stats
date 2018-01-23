@@ -1,12 +1,12 @@
 import React from 'react';
 
-export default function SummonerSpells() {
+export default function SummonerSpells(props) {
   return (
     <div
       className="summoners"
     >
-      {this.props.spell1}
+      {props.spells[0]}
       <br />
-      {this.props.spell2}
+      {props.spells[1]}
     </div>);
 }

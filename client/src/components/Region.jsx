@@ -3,8 +3,8 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
-export default function Region() {
+export default function Region(props) {
   return (
-    <DropdownItem onClick={this.props.handleClick}>{this.props.region}</DropdownItem>
+    <DropdownItem onClick={props.handleClick}>{props.region}</DropdownItem>
   );
 }

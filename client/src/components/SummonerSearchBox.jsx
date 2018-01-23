@@ -20,10 +20,9 @@ export default class SummonerSearchBox extends React.Component {
       region: 'Region',
       summonerName: '',
       isValid: false,
-      showError: false,
     };
-    this.regions = Regions.map((region) =>
-      <Region key={region} region={region} handleClick={this.selectRegion}/>
+    this.regions = Object.keys(Regions).map((region) =>
+      <Region key={region} region={region.toUpperCase()} handleClick={this.selectRegion}/>
     );
   }
 
@@ -41,20 +40,17 @@ export default class SummonerSearchBox extends React.Component {
   };
 
   onClickSummon = async () => {
-    if (this.state.isValid) {
+    if (this.state.isValid || this.state.region === 'Region') {
       try {
-        const req = new Request(`/summoner/${this.state.summonerName}?region=${this.state.region}`);
+        const req = new Request(`/summoner/${this.state.summonerName}?region=${Regions[this.state.region.toLowerCase()]}`);
         const res = await fetch(req);
         const data = await res.json();
         this.props.onFetchSummonerMatches(data);
-      } catch (err) {
-        this.props.onFetchError(err);
+      } catch(err) {
+        this.props.onShowError('Embrace the darkness...(error retrieving summoner data)');
       }
     } else {
-      this.props.onShowError();
-      this.setState({
-        showError: true,
-      });
+      this.props.onShowError('Invalid Summoner name or region');
     }
   };
 
@@ -65,7 +61,6 @@ export default class SummonerSearchBox extends React.Component {
     this.setState({
       isValid: isValid,
       summonerName: inputName,
-      showError: false,
     })
   };
 

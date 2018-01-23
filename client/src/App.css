@@ -1,7 +1,9 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #40fc5c;
+  background-image: url(https://cdn.lolalytics.com/image/background/background.jpg);
+  background-repeat: no-repeat;
+  background-color: #000;
 }
 
 .rounded {
@@ -78,7 +80,7 @@ body {
 }
 
 .deaths {
-  color: #ff000a;
+  color: #ff0300;
 }
 
 .assists {
