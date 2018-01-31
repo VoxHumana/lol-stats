@@ -7,7 +7,6 @@ import React, { Component } from 'react';
 import './App.css';
 import SummonerSearchBox from './components/SummonerSearchBox';
 import HeaderImage from './components/HeaderImage';
-import Caption from './components/Caption';
 import ChampionDetails from "./components/ChampionDetails";
 import SummonerSpell from "./components/SummonerSpell";
 import SummonerSpells from "./components/SummonerSpells";
@@ -63,6 +62,7 @@ class App extends Component {
     this.setState({
       showError: true,
       errorMessage: errMsg,
+      isLoading: false,
     })
   };
 
