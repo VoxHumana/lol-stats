@@ -9,4 +9,4 @@ it to a React client which displays the match history.
 
 May RNGesus smile upon you and remember - mid or feed, and always facecheck brushes!
 
-![alt text](https://thumbs.gfycat.com/LonelyYellowFox-max-1mb.gif "DEMACIA!")
+![alt text](https://thumbs.gfycat.com/FirsthandDimDolphin-size_restricted.gif "DEMACIA!")
