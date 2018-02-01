@@ -42,6 +42,7 @@ export default class SummonerSearchBox extends React.Component {
 
   onClickSummon = async () => {
     if (this.state.isValid && this.state.region !== 'Region') {
+      this.props.onHideError();
       this.props.onLoading();
       try {
         const req = new Request(`/summoner/${this.state.summonerName}?region=${Regions[this.state.region.toLowerCase()]}`);

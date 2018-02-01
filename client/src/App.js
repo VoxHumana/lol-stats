@@ -25,7 +25,6 @@ class App extends Component {
     this.state = {
       matchList: null,
       displayMatchList: false,
-      isLoading: false,
       showError: false,
       errorMessage: null,
     };
@@ -54,15 +53,14 @@ class App extends Component {
     this.spinner = null;
     this.setState({
       matchList: matchList,
-      isLoading: false,
     });
   };
 
   onShowError = (errMsg) => {
+    this.spinner = null;
     this.setState({
       showError: true,
       errorMessage: errMsg,
-      isLoading: false,
     })
   };
 
@@ -75,7 +73,6 @@ class App extends Component {
   onLoading = () => {
     this.spinner = <Spinner/>;
     this.setState({
-      isLoading: true,
       matchList: null,
     });
   };
