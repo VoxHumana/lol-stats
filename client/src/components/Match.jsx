@@ -6,10 +6,34 @@ import {
   Card,
   CardBody,
 } from 'reactstrap';
+import ChampionDetails from './ChampionDetails';
+import KDA from './KDA';
+import Stats from './Stats';
+import ChampionBuild from './ChampionBuild';
 
 export default class Match extends React.Component {
   constructor(props) {
     super(props);
+    this.win = props.matchDetails.win;
+    this.championDetails = (<ChampionDetails
+      champion={props.matchDetails.champion}
+      spells={props.matchDetails.summonerSpells}
+    />);
+    this.kda = (<KDA
+      kills={props.matchDetails.kills}
+      deaths={props.matchDetails.deaths}
+      assists={props.matchDetails.assists}
+    />);
+    this.stats = (<Stats
+      cs={props.matchDetails.cs}
+      gold={props.matchDetails.gold}
+      level={props.matchDetails.level}
+      duration={Math.round(props.matchDetails.gameDuration / 60)}
+    />);
+    this.build = (<ChampionBuild
+      items={props.matchDetails.items}
+      trinket={props.matchDetails.trinket}
+    />);
   }
 
   render() {
@@ -18,29 +42,29 @@ export default class Match extends React.Component {
         className="match-container"
       >
         <Col xs="12">
-          <Card className={this.props.win ? 'bg-success' : 'bg-danger'}>
+          <Card className={this.win ? 'bg-success' : 'bg-danger'}>
             <CardBody>
               <Container>
                 <Row>
                   <Col
                     xs="3"
                   >
-                    {this.props.championDetails}
+                    {this.championDetails}
                   </Col>
                   <Col
                     xs="3"
                   >
-                    {this.props.kda}
+                    {this.kda}
                   </Col>
                   <Col
                     xs="2"
                   >
-                    {this.props.stats}
+                    {this.stats}
                   </Col>
                   <Col
                     xs="4"
                   >
-                    {this.props.items}
+                    {this.build}
                   </Col>
                 </Row>
               </Container>

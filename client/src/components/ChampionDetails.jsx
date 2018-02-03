@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import SummonerSpells from './SummonerSpells';
 
 export default function ChampionDetails(props) {
-  const championImgUri = `http://ddragon.leagueoflegends.com/cdn/8.1.1/img/champion/${props.championImgSrc}`;
+  const championImgUri = `http://ddragon.leagueoflegends.com/cdn/8.1.1/img/champion/${props.champion.image}`;
   return (
     <div
       className="champion-details"
@@ -11,18 +11,8 @@ export default function ChampionDetails(props) {
         className="champion-img-container text-center"
       >
         <img className="rounded" src={championImgUri} alt="Champion" />
-        <span>{props.championName}</span>
+        <span>{props.champion.name}</span>
       </div>
-      {props.children}
+      <SummonerSpells spells={props.spells} />
     </div>);
 }
-
-ChampionDetails.propTypes = {
-  championImgSrc: PropTypes.string,
-  championName: PropTypes.string,
-};
-
-ChampionDetails.defaultProps = {
-  championImgSrc: null,
-  championName: 'Unnamed',
-};

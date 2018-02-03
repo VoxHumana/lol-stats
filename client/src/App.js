@@ -33,22 +33,24 @@ class App extends Component {
 
   onFetchSummonerMatches = (res) => {
     const matchList = res.map( (match) => {
-      const spells = match.summonerSpells.map( (spell) => <SummonerSpell summonerSpellImgSrc={spell.image} />
-      );
-      const summoners =
-        <SummonerSpells spells={spells} />;
-      const champDetails =
-        <ChampionDetails championImgSrc={match.champion.image} championName={match.champion.name}>
-          {summoners}
-        </ChampionDetails>;
-      const kda = <KDA kills={match.kills} deaths={match.deaths} assists={match.assists} />;
-      const stats = <Stats cs={match.cs} gold={match.gold} level={match.level} duration={Math.round(match.gameDuration / 60)} />;
-      const items = match.items.map( (item) => {
-        return item.name === 'empty' ? <EmptyItem/> : <ShopItem itemImgSrc={item.image}/>
-      });
-      const trinket = <Trinket trinketImgSrc={match.trinket.image}/>;
-      const championBuild = <ChampionBuild items={items} trinket={trinket}/>;
-      return <Match win={match.win} championDetails={champDetails} kda={kda} stats={stats} items={championBuild}/>;
+      return <Match matchDetails={match}/>;
+
+      // const spells = match.summonerSpells.map( (spell) => <SummonerSpell summonerSpellImgSrc={spell.image} />
+      // );
+      // const summoners =
+      //   <SummonerSpells spells={spells} />;
+      // const champDetails =
+      //   <ChampionDetails championImgSrc={match.champion.image} championName={match.champion.name}>
+      //     {summoners}
+      //   </ChampionDetails>;
+      // const kda = <KDA kills={match.kills} deaths={match.deaths} assists={match.assists} />;
+      // const stats = <Stats cs={match.cs} gold={match.gold} level={match.level} duration={Math.round(match.gameDuration / 60)} />;
+      // const items = match.items.map( (item) => {
+      //   return item.name === 'empty' ? <EmptyItem/> : <ShopItem itemImgSrc={item.image}/>
+      // });
+      // const trinket = <Trinket trinketImgSrc={match.trinket.image}/>;
+      // const championBuild = <ChampionBuild items={items} trinket={trinket}/>;
+      // return <Match win={match.win} championDetails={champDetails} kda={kda} stats={stats} items={championBuild}/>;
     });
     this.spinner = null;
     this.setState({
