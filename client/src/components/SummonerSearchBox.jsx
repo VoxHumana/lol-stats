@@ -44,14 +44,7 @@ export default class SummonerSearchBox extends React.Component {
     if (this.state.isValid && this.state.region !== 'Region') {
       this.props.onHideError();
       this.props.onLoading();
-      try {
-        const req = new Request(`/summoner/${this.state.summonerName}?region=${Regions[this.state.region.toLowerCase()]}`);
-        const res = await fetch(req);
-        const data = await res.json();
-        this.props.onFetchSummonerMatches(data);
-      } catch(err) {
-        this.props.onShowError('Embrace the darkness...(error retrieving summoner data)');
-      }
+      this.props.onFetchSummonerMatches(this.state.summonerName, this.state.region);
     } else {
       this.props.onShowError('Invalid Summoner name or region');
     }
