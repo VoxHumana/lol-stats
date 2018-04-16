@@ -3,6 +3,7 @@ const path = require('path')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const summoner = require('./routes/summoner')
 
@@ -15,6 +16,16 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'client/build')))
+
+mongoose.connect('mongodb://localhost/lolstats')
+let db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', () => {
+  console.log('MongoDB connection successful')
+  const cacheService = require('./services/staticCacheService')
+  cacheService.initStaticCache()
+  console.log('Static cache populated')
+})
 
 app.use('/summoner/:summonerName', summoner)
 

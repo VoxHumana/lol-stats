@@ -1,6 +1,7 @@
 const getAccountId = require('../services/accountIdService')
 const getRecentMatches = require('../services/recentMatchesService')
 const getMatchDetails = require('../services/matchDetailsService')
+const cacheService = require('../services/staticCacheService')
 
 const championStaticData = require('../static/Champions').data
 const shopItemStaticData = require('../static/ItemShop').data
@@ -16,26 +17,52 @@ async function filterMatchDetails (accountId, match) {
     throw new Error(`Cannot find summoner in ${match.gameId}`)
   }
   const targetPlayer = match.participants.find(p => p.participantId === targetId)
-  const { championId, spell1Id, spell2Id } = targetPlayer
+  const { 
+    championId,
+    spell1Id,
+    spell2Id
+  } = targetPlayer
   const {
-    kills, deaths, assists,
-    item0, item1, item2, item3, item4, item5, item6,
-    totalMinionsKilled, goldEarned, champLevel
+    win,
+    kills,
+    deaths,
+    assists,
+    item0,
+    item1,
+    item2,
+    item3,
+    item4,
+    item5,
+    item6,
+    totalMinionsKilled,
+    goldEarned,
+    champLevel
   } = targetPlayer.stats
+
+  let champ = await cacheService.getChampion(championId)
+  let spell1 = await cacheService.getSpell(spell1Id)
+  let spell2 = await cacheService.getSpell(spell2Id)
+  let firstItem = await cacheService.getItem(item0)
+  let secondItem = await cacheService.getItem(item1)
+  let thirdItem = await cacheService.getItem(item2)
+  let fourthItem = await cacheService.getItem(item3)
+  let fifthItem = await cacheService.getItem(item4)
+  let sixthItem = await cacheService.getItem(item5)
+  let trinket = await cacheService.getItem(item6)
   return {
-    win: targetPlayer.stats.win,
+    win,
     champion: {
-      name: championStaticData[championId].name,
-      image: championStaticData[championId].image.full
+      name: champ.name,
+      image: champ.image.full
     },
     summonerSpells: [
       {
-        name: summonerSpellsStaticData[spell1Id].name,
-        image: summonerSpellsStaticData[spell1Id].image.full
+        name: spell1.name,
+        image: spell1.image.full
       },
       {
-        name: summonerSpellsStaticData[spell2Id].name,
-        image: summonerSpellsStaticData[spell2Id].image.full
+        name: spell2.name,
+        image: spell2.image.full
       }
     ],
     kills,
@@ -43,33 +70,33 @@ async function filterMatchDetails (accountId, match) {
     assists,
     items: [
       {
-        name: shopItemStaticData[item0].name,
-        image: shopItemStaticData[item0].image.full
+        name: firstItem.name,
+        image: firstItem.image.full
       },
       {
-        name: shopItemStaticData[item1].name,
-        image: shopItemStaticData[item1].image.full
+        name: secondItem.name,
+        image: secondItem.image.full
       },
       {
-        name: shopItemStaticData[item2].name,
-        image: shopItemStaticData[item2].image.full
+        name: thirdItem.name,
+        image: thirdItem.image.full
       },
       {
-        name: shopItemStaticData[item3].name,
-        image: shopItemStaticData[item3].image.full
+        name: fourthItem.name,
+        image: fourthItem.image.full
       },
       {
-        name: shopItemStaticData[item4].name,
-        image: shopItemStaticData[item4].image.full
+        name: fifthItem.name,
+        image: fifthItem.image.full
       },
       {
-        name: shopItemStaticData[item5].name,
-        image: shopItemStaticData[item5].image.full
+        name: sixthItem.name,
+        image: sixthItem.image.full
       }
     ],
     trinket: {
-      name: shopItemStaticData[item6].name,
-      image: shopItemStaticData[item6].image.full
+      name: trinket.name,
+      image: trinket.image.full
     },
     cs: totalMinionsKilled,
     gold: goldEarned,
