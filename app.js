@@ -1,3 +1,12 @@
+const makeAccountIdService = require('./services/accountIdService')
+const makeMatchDetailsService = require('./services/matchDetailsService')
+const makeRecentMatchesService = require('./services/recentMatchesService')
+const makeCacheService = require('./services/staticCacheService')
+
+const Item = require('./models/static/item')
+const Spell = require('./models/static/spell')
+const Champion = require('./models/static/champion')
+
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
@@ -5,7 +14,12 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
-const summoner = require('./routes/summoner')
+const summonerController = require('./controllers/getSummoner')
+
+const accountIdService = makeAccountIdService()
+const matchDetailsService = makeMatchDetailsService()
+const recentMatchesService = makeRecentMatchesService()
+const cacheService = makeCacheService({Item, Spell, Champion})
 
 const app = express()
 
@@ -22,12 +36,32 @@ let db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', () => {
   console.log('MongoDB connection successful')
-  const cacheService = require('./services/staticCacheService')
   cacheService.initStaticCache()
   console.log('Static cache populated')
 })
 
-app.use('/summoner/:summonerName', summoner)
+app.get('/summoner/:summonerName', async (req, res) => {
+  if (req.params.summonerName === undefined || req.query.region === undefined) {
+    res.status(400).send({
+      error: 'Invalid summoner name or region'
+    })
+  }
+  const { summonerName } = req.params
+  const { region } = req.query
+  const options = {
+    accountIdService,
+    recentMatchesService,
+    matchDetailsService,
+    cacheService
+  }
+  const response = await summonerController(summonerName, region, options)
+  res.status(response.status)
+  if (!response.error) {
+    res.send(response.data)
+  } else {
+    res.send(response.error)
+  }
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

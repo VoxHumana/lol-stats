@@ -26,7 +26,7 @@ const spellSchema = new Schema({
   }
 })
 
-spellSchema.pre('update', function() {
+spellSchema.pre('update', function () {
   this.update({}, {
     $set: {
       createdAt: Date.now()

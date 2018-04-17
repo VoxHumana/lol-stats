@@ -1,23 +1,16 @@
-const getAccountId = require('../services/accountIdService')
-const getRecentMatches = require('../services/recentMatchesService')
-const getMatchDetails = require('../services/matchDetailsService')
-const cacheService = require('../services/staticCacheService')
-
-const championStaticData = require('../static/Champions').data
-const shopItemStaticData = require('../static/ItemShop').data
-const summonerSpellsStaticData = require('../static/SummonerSpells').data
+const assert = require('assert')
 
 function getSummonerParticipantId (id, participants) {
   return (participants.find(p => p.player.currentAccountId === id)).participantId
 }
 
-async function filterMatchDetails (accountId, match) {
+async function filterMatchDetails (accountId, match, cacheService) {
   const targetId = getSummonerParticipantId(accountId, match.participantIdentities)
   if (targetId == null || targetId === undefined) {
     throw new Error(`Cannot find summoner in ${match.gameId}`)
   }
   const targetPlayer = match.participants.find(p => p.participantId === targetId)
-  const { 
+  const {
     championId,
     spell1Id,
     spell2Id
@@ -105,9 +98,21 @@ async function filterMatchDetails (accountId, match) {
   }
 }
 
-async function getSummoner (summonerName, region) {
+module.exports = async function (summonerName, region, options) {
+  const {
+    accountIdService,
+    recentMatchesService,
+    matchDetailsService,
+    cacheService
+  } = options
+
+  assert(accountIdService, 'options.accountIdService is required')
+  assert(recentMatchesService, 'options.recentMatchesService is required')
+  assert(matchDetailsService, 'options.matchDetailsService is required')
+  assert(cacheService, 'options.cacheService is required')
+
   try {
-    const accountId = await getAccountId(summonerName)
+    const accountId = await accountIdService.getByName(summonerName, region)
     if (!accountId) {
       return {
         status: 400,
@@ -115,12 +120,10 @@ async function getSummoner (summonerName, region) {
       }
     }
 
-    const matchList = await getRecentMatches(accountId, region)
-    const matches = []
-    await Promise.all(matchList.matches.map(async (m) => {
-      const match = await getMatchDetails(m.gameId, region)
-      const filteredMatchDetails = await filterMatchDetails(accountId, match)
-      matches.push(filteredMatchDetails)
+    const matchList = await recentMatchesService.getByAccId(accountId, region)
+    const matches = await Promise.all(matchList.matches.map(async (m) => {
+      const match = await matchDetailsService.getMatchById(m.gameId, region)
+      return filterMatchDetails(accountId, match, cacheService)
     }))
 
     return {
@@ -134,5 +137,3 @@ async function getSummoner (summonerName, region) {
     }
   }
 }
-
-module.exports = getSummoner

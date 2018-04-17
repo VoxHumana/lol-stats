@@ -26,7 +26,7 @@ const champSchema = new Schema({
   }
 })
 
-champSchema.pre('update', function() {
+champSchema.pre('update', function () {
   this.update({}, {
     $set: {
       createdAt: Date.now()

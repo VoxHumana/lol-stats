@@ -26,7 +26,7 @@ const itemSchema = new Schema({
   }
 })
 
-itemSchema.pre('update', function() {
+itemSchema.pre('update', function () {
   this.update({}, {
     $set: {
       createdAt: Date.now()
