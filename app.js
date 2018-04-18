@@ -2,6 +2,7 @@ const makeAccountIdService = require('./services/accountIdService')
 const makeMatchDetailsService = require('./services/matchDetailsService')
 const makeRecentMatchesService = require('./services/recentMatchesService')
 const makeCacheService = require('./services/staticCacheService')
+const makeMemCacheServce = require('./services/memCacheService')
 
 const Item = require('./models/static/item')
 const Spell = require('./models/static/spell')
@@ -13,6 +14,7 @@ const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const redisClient = require('async-redis').createClient(process.env.REDIS_PORT, process.env.REDIS_HOST)
 
 const summonerController = require('./controllers/getSummoner')
 
@@ -20,6 +22,7 @@ const accountIdService = makeAccountIdService()
 const matchDetailsService = makeMatchDetailsService()
 const recentMatchesService = makeRecentMatchesService()
 const cacheService = makeCacheService({Item, Spell, Champion})
+const memCacheService = makeMemCacheServce(redisClient)
 
 const app = express()
 
@@ -31,13 +34,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'client/build')))
 
-mongoose.connect('mongodb://localhost/lolstats')
+mongoose.connect(process.env.MONGODB_URI)
 let db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', () => {
   console.log('MongoDB connection successful')
   cacheService.initStaticCache()
   console.log('Static cache populated')
+})
+
+redisClient.on('connect', () => {
+  console.log('Redis connection successful')
 })
 
 app.get('/summoner/:summonerName', async (req, res) => {
@@ -52,7 +59,8 @@ app.get('/summoner/:summonerName', async (req, res) => {
     accountIdService,
     recentMatchesService,
     matchDetailsService,
-    cacheService
+    cacheService,
+    memCacheService
   }
   const response = await summonerController(summonerName, region, options)
   res.status(response.status)
