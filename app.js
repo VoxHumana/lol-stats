@@ -14,7 +14,7 @@ const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const redisClient = require('async-redis').createClient(process.env.REDIS_PORT, process.env.REDIS_HOST)
+const redisClient = require('async-redis').createClient(process.env.REDISCLOUD_URL, {no_ready_check: true})
 
 const summonerController = require('./controllers/getSummoner')
 
