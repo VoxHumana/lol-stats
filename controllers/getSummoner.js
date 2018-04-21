@@ -144,21 +144,20 @@ module.exports = async function (summonerName, region, options) {
           error: 'Summoner not found'
         }
       }
-  
+
       const matchList = await recentMatchesService.getByAccId(accountId, region)
       const matches = await Promise.all(matchList.matches.map(async (m) => {
         const match = await matchDetailsService.getMatchById(m.gameId, region)
         return filterMatchDetails(accountId, match, cacheService)
       }))
-      
+
       memCacheService.insertByName(summonerName, MEMCACHE_EXPIRATION_SECS, JSON.stringify(matches))
-      
+
       return {
         status: 200,
         data: matches
       }
     }
-  
   } catch (err) {
     return {
       status: 400,
