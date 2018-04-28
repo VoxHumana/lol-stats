@@ -9,9 +9,8 @@ const Spell = require('./models/static/spell')
 const Champion = require('./models/static/champion')
 
 const express = require('express')
-const path = require('path')
+const cors = require('cors')
 const logger = require('morgan')
-const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const redisClient = require('async-redis').createClient(process.env.REDISCLOUD_URL, {no_ready_check: true})
@@ -31,8 +30,6 @@ const isProduction = process.env.NODE_ENV === 'production'
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'client/build')))
 
 mongoose.connect(process.env.MONGODB_URI)
 let db = mongoose.connection
@@ -47,7 +44,7 @@ redisClient.on('connect', () => {
   console.log('Redis connection successful')
 })
 
-app.get('/summoner/:summonerName', async (req, res) => {
+app.get('/summoner/:summonerName', cors(), async (req, res) => {
   if (req.params.summonerName === undefined || req.query.region === undefined) {
     res.status(400).send({
       error: 'Invalid summoner name or region'
