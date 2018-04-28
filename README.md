@@ -1,6 +1,6 @@
 ## League of Legends Summoner Match History
 
-[Welcome Summoners](https://agile-garden-71195.herokuapp.com/)
+[Welcome Summoners](https://focused-wilson-953ad9.netlify.com/)
 
 Look up the 10 most recent matches for a League of Legends summoner!
 This is built using a Node.js/Express backend that queries Riot's API
